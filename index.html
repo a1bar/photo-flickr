@@ -1,52 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Welcome to Vue</title>
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <title>I love photography</title>
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
 </head>
 <body>
-  <div id="app">
-    <img src="https://vuejs.org/images/logo.png" alt="Vue logo">
-    <h1>{{ greeting }}</h1>
-    <ul>
-      <li>
-        To learn more about Vue, visit
-        <a :href="docsURL" target="_blank">
-          {{ humanizeURL(docsURL) }}
-        </a>
-      </li>
-      <li>
-        For live help with simple questions, check out
-        <a :href="gitterURL" target="_blank">
-          the Gitter chat
-        </a>
-      </li>
-      <li>
-        For more complex questions, post to
-        <a :href="forumURL" target="_blank">
-          the forum
-        </a>
-      </li>
-    </ul>
+  <div id="app" class="columns is-multiline is-mobile">
+  <div class="column is-narrow" v-for="photo in photos" key="photo.id">
+    <a :href="photo.url_l" target="_blank"><img :src="photo.url_m" /></a>
   </div>
-
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.min.js"></script>
   <script>
-    new Vue({
+    var vm=new Vue({
       el: '#app',
       data: {
-        greeting: 'Welcome to your Vue.js app!',
-        docsURL: 'http://vuejs.org/guide/',
-        gitterURL: 'https://gitter.im/vuejs/vue',
-        forumURL: 'http://forum.vuejs.org/'
+        photos:[]
+      },
+      beforeCreate: function() {
+        var vm = this;
+        return axios.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=bab05ea17002c5f9f458a145df6ff286&format=json&nojsoncallback=1&tags=portrait&user_id=88203791@N00&per_page=500&extras=url_m,url_l')
+        .then(function(response){
+          vm.photos = response.data.photos.photo;
+          return response.data.photos;
+        })
       },
       methods: {
-        humanizeURL: function (url) {
-          return url
-            .replace(/^https?:\/\//, '')
-            .replace(/\/$/, '')
+        imageUrl: function (photo, size) {
+          return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_'+size+'.jpg'
         }
       }
     })
   </script>
+  <style>
+
+  </style>
 </body>
 </html>
