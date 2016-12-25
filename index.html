@@ -1,41 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>I love photography</title>
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
+  <link rel="stylesheet" href="main.css">
 </head>
-<body>
-  <div id="app" class="columns is-multiline is-mobile">
-  <div class="column is-narrow" v-for="photo in photos" key="photo.id">
-    <a :href="photo.url_l" target="_blank"><img :src="photo.url_q" /></a>
-  </div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.min.js"></script>
-  <script>
-    var vm=new Vue({
-      el: '#app',
-      data: {
-        photos:[]
-      },
-      beforeCreate: function() {
-        var vm = this;
-        return axios.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=bab05ea17002c5f9f458a145df6ff286&format=json&nojsoncallback=1&user_id=88203791@N00&per_page=500&extras=url_q,url_m,url_l,url_o')
-        .then(function(response){
-          vm.photos = response.data.photos.photo;
-          return response.data.photos;
-        })
-      },
-      methods: {
-        imageUrl: function (photo, size) {
-          return 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret + '_'+size+'.jpg'
-        }
-      }
-    })
-  </script>
-  <style>
 
-  </style>
+<body>
+  <div id="app" v-cloak>
+    <div class="items" class="items" v-if="photos.length" ref="container">
+      <div class="item first background-2">
+        <div class="text-container">
+          <h2>Hi,</h2>
+          <h1>I'm <a :href="config.flickr" target="_blank">{{config.name}}</a></h1>
+          <h2>welcome to my portfolio!</h2>
+
+        </div>
+      </div>
+      <div class="item" v-for="photo in photos" key="photo.id">
+        <div class="img-container" v-bind:style="photoStyles[photo.id]">
+          <img v-lazy.container="photo.imgObj" v-bind:style="photoStyles[photo.id]" :srcset="photo.url_m + ' 400w, ' + photo.url_l + ' 800w, ' + photo.imgObj.src +' 1200w'" />
+          <!--:srcset="photo.url_m + ' 400w, ' + photo.url_l + ' 800w, ' + photo.url_o ? photo.url_o : photo.url_l +' 1200w'"-->
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.min.js"></script>
+  <script src="vue-lazyload.js"></script>
+  <script src="main.js"></script>
 </body>
+
 </html>
