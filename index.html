@@ -4,27 +4,30 @@
 <head>
   <title>I love photography</title>
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
   <div id="app" v-cloak>
-    <div class="items" class="items" v-if="photos.length" ref="container">
-      <div class="item first background-2">
-        <div class="text-container">
-          <h2>Hi,</h2>
-          <h1>I'm <a :href="config.flickr" target="_blank">{{config.name}}</a></h1>
-          <h2>welcome to my portfolio!</h2>
+    <transition name="fade" appear>
+      <div class="items" class="items" v-if="photos.length" ref="container">
+        <div class="item first background-2">
+          <div class="text-container">
+            <h2>Hi,</h2>
+            <h1>I'm <a :href="config.flickr" target="_blank">{{config.name}}</a></h1>
+            <h2>welcome to my portfolio!</h2>
 
+          </div>
+        </div>
+        <div class="item" v-for="photo in photos" key="photo.id">
+          <div class="img-container" v-bind:style="photoStyles[photo.id]">
+            <img v-lazy.container="photo.imgObj" v-bind:style="photoStyles[photo.id]" :alt="photo.title"/>
+            <!-- :srcset="photo.url_m + ' 400w, ' + photo.url_l + ' 800w, ' + photo.imgObj.src +' 1200w'" -->
+          </div>
         </div>
       </div>
-      <div class="item" v-for="photo in photos" key="photo.id">
-        <div class="img-container" v-bind:style="photoStyles[photo.id]">
-          <img v-lazy.container="photo.imgObj" v-bind:style="photoStyles[photo.id]" :srcset="photo.url_m + ' 400w, ' + photo.url_l + ' 800w, ' + photo.imgObj.src +' 1200w'" />
-          <!--:srcset="photo.url_m + ' 400w, ' + photo.url_l + ' 800w, ' + photo.url_o ? photo.url_o : photo.url_l +' 1200w'"-->
-        </div>
-      </div>
-    </div>
+    </transition>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.min.js"></script>

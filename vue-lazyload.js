@@ -366,8 +366,17 @@ var Lazy = function () {
         this.lazyLoadHandler = throttle(function () {
             var catIn = false;
             _this.ListenerQueue.forEach(function (listener) {
-                if (listener.state.loaded) return;
                 catIn = listener.checkInView();
+                if (listener.state.loaded) {
+                    if(!catIn) {
+                        listener.state.hidden = true;
+                        listener.render('loading',true);
+                    } else if (listener.state.hidden) {
+                        listener.state.hidden = false;
+                        listener.render('loaded',true);
+                    }
+                    return
+                };
                 catIn && listener.load();
             });
         }, 200);
@@ -620,6 +629,10 @@ var LazyComponent = (function (lazy) {
             },
             load: function load() {
                 this.show = true;
+            },
+            unload: function load() {
+                debugger;
+                this.show = false;
             }
         }
     };
